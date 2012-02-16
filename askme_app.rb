@@ -18,6 +18,8 @@ require 'logger'
 
 require 'mail'
 
+require 'tire'
+
 ENV['RACK_ENV'] ||= "development"
 
 #including lib
