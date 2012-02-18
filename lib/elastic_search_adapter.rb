@@ -1,5 +1,7 @@
 # encoding: utf-8
 # author: rpolasek
+# vim:ff=unix ts=2 ss=2
+
 class ElasticSearchAdapter
 	
 	def self.save(message)

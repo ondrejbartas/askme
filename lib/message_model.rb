@@ -1,5 +1,6 @@
 # encoding: utf-8
 # author: rpolasek
+# vim:ff=unix ts=2 ss=2
 
 # TODO: custom exception
 
@@ -13,25 +14,25 @@ class MessageModel
 	# TODO: it would be more clear (february and leap-year)
 	date_time_regexp = /
 		(?<date>
-		 2\d{3}							# year
-		 -
-		 (
-			 0\d | 1[0-2]			# month
-		 )
-		 -
-		 (
-			 [0-2]\d | 3[01]	# day
-		 )
+			2\d{3}						# year
+			-
+			(
+				0\d | 1[0-2]		# month
+			)
+			-
+			(
+				[0-2]\d | 3[01]	# day
+			)
 		){0}
 
 		(?<time>
-		 (
-			 [01]\d | 2[0-3]	# hours
-		 )
-		 :
-		 [0-5]\d						# minutes
-		 :
-		 [0-5]\d						# seconds
+			(
+				[01]\d | 2[0-3]	# hours
+			)
+			:
+			[0-5]\d						# minutes
+			:
+			[0-5]\d						# seconds
 		){0}
 
 		^\g<date>T\g<time>$
@@ -43,13 +44,13 @@ class MessageModel
 	#
 	MESSAGE_MODEL = {
 		:fields => {
-			:id 				=> :Integer,
-			:author_id 	=> :Integer,
-			:thread_id 	=> :Integer,
-			:message 		=> :String,
-			:date_time	=> [:String, date_time_regexp, '<yyyy-mm-dd>T<hh:mm:ss>'],
-			:tags 			=> [:Array, :String],
-			:recipients	=> [:Array, :String]
+			:id         => :Integer,
+			:author_id  => :Integer,
+			:thread_id  => :Integer,
+			:message    => :String,
+			:date_time  => [:String, date_time_regexp, '<yyyy-mm-dd>T<hh:mm:ss>'],
+			:tags       => [:Array, :String],
+			:recipients => [:Array, :String]
 		},
 		:required => [ :id, :author_id, :message, :thread_id ]
 	}
