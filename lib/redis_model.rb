@@ -28,7 +28,7 @@ module RedisModel
   module ClassMethods
     
     def initialize_redis_model_methods conf
-      self.conf = conf
+      @conf = conf
       #take all fields and make methods for them
       conf[:fields].each do |attr, action|  
         define_method "#{attr}" do
