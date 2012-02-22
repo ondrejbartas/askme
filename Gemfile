@@ -14,6 +14,8 @@ gem "sinatra", "~> 1.2.6"
 
 gem "mail"
 
+gem "tire"
+
 group :test do
   gem "rack-test"
   gem 'shoulda-context'
