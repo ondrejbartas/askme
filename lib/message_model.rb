@@ -11,7 +11,7 @@ class MessageModel
   attr_accessor :date, :time, :date_time # computed
 
 
-  # TODO: it would be more clear (february and leap-year)
+  # TODO: it would be more exact (february and leap-year)
   date_time_regexp = /
     (?<date>
       2\d{3}            # year
@@ -36,7 +36,7 @@ class MessageModel
     ){0}
 
     ^\g<date>T\g<time>$
-	/x
+  /x
 
   #
   # <field> : <field_type>
