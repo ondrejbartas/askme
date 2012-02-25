@@ -4,15 +4,10 @@
 
 # TODO: custom exception
 
-class MessageModel
-
-  attr_accessor :args
-  attr_accessor :id, :author_id, :message, :thread_id, :tags, :recipients # automatically instantinated
-  attr_accessor :date, :time, :date_time # computed
-
+module MessageModel
 
   # TODO: it would be more exact (february and leap-year)
-  date_time_regexp = /
+  DATE_TIME_REGEXP = /
     (?<date>
       2\d{3}            # year
       -
@@ -38,37 +33,13 @@ class MessageModel
     ^\g<date>T\g<time>$
   /x
 
-  #
-  # <field> : <field_type>
-  # <field> : [ <field_type>, <field_value_type>, <field_value_format>
-  #
-  MESSAGE_MODEL = {
-    :fields => {
-      :id         => :Integer,
-      :author_id  => :Integer,
-      :thread_id  => :Integer,
-      :message    => :String,
-      :date_time  => [:String, date_time_regexp, '<yyyy-mm-dd>T<hh:mm:ss>'],
-      :tags       => [:Array, :String],
-      :recipients => [:Array, :String]
-    },
-    :required => [ :id, :author_id, :message, :thread_id ]
-  }
+  DATE_TIME_FORMAT = '<yyyy-mm-dd>T<hh:mm:ss>'
 
-  def initialize(args={})
-    @args = args
-    @args.each_pair { |name, value| instance_variable_set(:"@#{name}", value) }
-
-    @date, @time = Time.now.getutc.to_s.split(" ")
-    @date_time = "#{@date}T#{@time}"
-    @tags, @recipients = parse_message(@message)
-		
-    @args[:date_time] ||= @date_time
-    @args[:tags] ||= @tags
-    @args[:recipients] ||= @recipients
+  # TODO: initialization needed?
+  def self.included(base)
   end
 
-  # --- for elasticsearch adapter
+  # --- for elasticsearch
 
   def type
     'askme'
@@ -78,40 +49,44 @@ class MessageModel
     @args.to_json
   end
 
-  def save
-    err_msg = validate_before_save
-    raise err_msg.join(";") unless err_msg.empty?
-		
-    ElasticSearchAdapter.save(self)
-  end
-
-  def find
-    err_msg = validate_before_find
-    raise err_msg.join(";") unless err_msg.empty?
-		
-    ElasticSearchAdapter.find(self)
-  end
-
   protected
 
-  def parse_message(message)
-    tags = message.scan(/\s+#([^\s.,;:]+)/).flatten
-    recipients = message.scan(/\s+@([^\s.,;:]+)/).flatten
-    return tags, recipients
+  # --- data validation
+
+  def validate_before_save
+    errors = []
+    # validate required fields
+    @model[:required].each do |field|
+      errors << error_msg(field, true) if @args[field].nil? || !valid?(field)
+    end
+    # validate the rest
+    (@model[:fields].keys - @model[:required]).each do |field|
+      errors << error_msg(field) unless valid?(field)
+    end
+    return errors
+  end
+
+  def validate_before_find
+    errors = []
+    # validate all fields (they may be nil or '')
+    @model[:fields].keys.each do |field|
+      unless args[field].nil?
+        errors << error_msg(field) unless valid?(field)
+      end
+    end
+    return errors
   end
 
   private
 
-  # --- data validation
-
   def field_type(field)
-    field_spec = MESSAGE_MODEL[:fields][field]
+    field_spec = @model[:fields][field]
     field_spec.is_a?(Array) ? eval(field_spec[0].to_s) : eval(field_spec.to_s)
   end
 
   # TODO: field must be an Array
   def field_value_type(field)
-    field_spec = MESSAGE_MODEL[:fields][field]
+    field_spec = @model[:fields][field]
     case field_spec[0]
     when :Array then eval(field_spec[1].to_s) # String
     when :String then field_spec[1]           # Regexp
@@ -121,7 +96,7 @@ class MessageModel
 
   # TODO: field must be an Array
   def field_value_format(field)
-    field_spec = MESSAGE_MODEL[:fields][field]
+    field_spec = @model[:fields][field]
     if field_spec.size > 2
       "format #{field_spec[2]}" # Regexp (format)
     else
@@ -130,7 +105,7 @@ class MessageModel
   end
 
   def valid?(field)
-    field_spec = MESSAGE_MODEL[:fields][field]
+    field_spec = @model[:fields][field]
     if field_spec.is_a?(Array)
       return false unless @args[field].is_a?(field_type(field))
 			
@@ -153,37 +128,15 @@ class MessageModel
     end
   end
 
-  def error_msg(field)
-    msg = "field '#{field}' is required and must be #{field_type(field)}"
-    if MESSAGE_MODEL[:fields][field].is_a?(Array)
+  def error_msg(field, required=false)
+    msg = "field '#{field}' "
+    msg.concat('is required and ') if required
+    msg.concat("must be #{field_type(field)}")
+    if @model[:fields][field].is_a?(Array)
       msg += " of #{field_value_format(field)}"
     end
     msg += " => '#{@args[field]}'"
     return msg
-  end
-
-  def validate_before_save
-    errors = []
-    # validate required fields
-    MESSAGE_MODEL[:required].each do |field|
-      errors << error_msg(field) if @args[field].nil? || !valid?(field)
-    end
-    # validate the rest
-    (MESSAGE_MODEL[:fields].keys - MESSAGE_MODEL[:required]).each do |field|
-      errors << error_msg(field) unless valid?(field)
-    end
-    return errors
-  end
-
-  def validate_before_find
-    errors = []
-    # validate all fields (they may be nil)
-    MESSAGE_MODEL[:fields].each do |field|
-      unless field.nil?
-        errors << error_msg(field) unless valid?(field)
-      end
-    end
-    return err_msg
   end
 
 end
