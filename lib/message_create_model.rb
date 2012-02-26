@@ -11,7 +11,7 @@ class MessageCreateModel
   attr_reader :model
 
   attr_accessor :args
-  attr_accessor :id, :author_id, :thread_id, :message, :tags, :recipients # automatically instantinated
+  attr_accessor :id, :thread_id, :author, :message, :tags, :recipients, :location # automatically instantinated
   
   attr_reader :date, :time, :date_time # computed
 
@@ -22,14 +22,15 @@ class MessageCreateModel
   MODEL = {
     :fields => {
       :id         => :Fixnum,
-      :author_id  => :Fixnum,
       :thread_id  => :Fixnum,
+      :author     => :String,
       :message    => :String,
       :date_time  => [:String, MessageModel::DATE_TIME_REGEXP, MessageModel::DATE_TIME_FORMAT],
       :tags       => [:Array, :String],
-      :recipients => [:Array, :String]
+      :recipients => [:Array, :String],
+      :location   => { :lat => :Fixnum, :lon => :Fixnum }
     },
-    :required => [ :id, :author_id, :message, :thread_id ]
+    :required => [ :id, :thread_id, :author, :message ]
   }
 
   def initialize(args={})

@@ -11,7 +11,7 @@ class MessageFindModel
   attr_reader :model
 
   attr_accessor :args
-  attr_accessor :ids, :author_ids, :thread_ids, :message, :start_date_time, :end_date_time, :tags, :recipients # automatically instantinated
+  attr_accessor :ids, :thread_ids, :authors, :message, :start_date_time, :end_date_time, :tags, :recipients, :location # automatically instantinated
   
   attr_reader :start_date, :start_time, :end_date, :end_time # computed
 
@@ -22,13 +22,14 @@ class MessageFindModel
   MODEL = {
     :fields => {
       :ids              => [:Array, :Fixnum],
-      :author_ids       => [:Array, :Fixnum],
       :thread_ids       => [:Array, :Fixnum],
+      :authors          => [:Array, :String],
       :message          => :String,
       :start_date_time  => [:String, MessageModel::DATE_TIME_REGEXP, MessageModel::DATE_TIME_FORMAT],
       :end_date_time    => [:String, MessageModel::DATE_TIME_REGEXP, MessageModel::DATE_TIME_FORMAT],
       :tags             => [:Array, :String],
-      :recipients       => [:Array, :String]
+      :recipients       => [:Array, :String],
+      :location         => { :lat => :Fixnum, :lon => :Fixnum }
     }
   }
 

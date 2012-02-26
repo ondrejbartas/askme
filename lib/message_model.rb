@@ -3,6 +3,7 @@
 # vim:ff=unix ts=2 ss=2 sts=2 et
 
 # TODO: custom exception
+# TODO: hash (geo location) validation
 
 module MessageModel
 
@@ -123,6 +124,9 @@ module MessageModel
         raise 'unknown field type to validate'
       end
 		
+    elsif field_spec.is_a?(Hash)
+      return true # TODO: ignore hash validation
+
     else
       @args[field].is_a?(field_type(field))
     end
