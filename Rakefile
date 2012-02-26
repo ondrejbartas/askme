@@ -85,3 +85,30 @@ namespace :redis do
     end
   end
 end
+
+# it does not solve the elasticsearch installation
+ELASTIC_PID = File.join(PIDS_DIR, 'elastic.pid')
+namespace :elastic do
+  desc 'start the elasticsearch server'
+  task :start do
+    elastic_running = \
+    begin
+      Process.kill(0, File.read(ELASTIC_PID).to_i) if FileUtils.exists?(ELASTIC_PID)
+    rescue Errno::ESRCH
+      FileUtils.rm(ELASTIC_PID)
+      false
+    end
+    system('pwd')
+    puts system("elasticsearch -f -p #{ELASTIC_PID}") unless elastic_running
+    puts 'elasticsearch started'
+  end
+
+  desc 'stop the elasticsearch server'
+  task :stop do
+    if File.exists?(ELASTIC_PID)
+      Process.kill('INT', File.read(ELASTIC_PID).to_i)
+      FileUtils.rm(ELASTIC_PID)
+      puts 'elasticsearch stopped'
+    end
+  end
+end
