@@ -3,6 +3,9 @@
 # vim:ff=unix ts=2 ss=2 sts=2 et
 
 # TODO: custom exception
+# TODO: find by geo location
+#       - http://www.elasticsearch.org/blog/2010/08/16/geo_location_and_search.html
+#       - https://github.com/elasticsearch/elasticsearch/issues/279
 
 class ElasticSearchAdapter
 	
@@ -36,19 +39,19 @@ class ElasticSearchAdapter
     end
   end
 
-  def self.find_by_author(id)
-    if id.is_a?(Array)
-      Tire.search('askme') { query { boolean { id.each { |author_id| should { string "author_id:#{author_id}" } } } } }.results
-    else
-      Tire.search('askme') { query { string "author_id:#{id}" } }.results
-    end
-  end
-
   def self.find_by_thread(id)
     if id.is_a?(Array)
       Tire.search('askme') { query { boolean { id.each { |thread_id| should { string "thread_id:#{thread_id}" } } } } }.results
     else
       Tire.search('askme') { query { string "thread_id:#{id}" } }.results
+    end
+  end
+
+  def self.find_by_author(name)
+    if name.is_a?(Array)
+      Tire.search('askme') { query { boolean { name.each { |author| should { string "author:#{author}" } } } } }.results
+    else
+      Tire.search('askme') { query { string "author:#{name}" } }.results
     end
   end
 
@@ -113,14 +116,14 @@ class ElasticSearchAdapter
     case args.keys[0]
     when :ids
       find_by_id(message.ids)
-    when :author_ids
-      find_by_author(message.author_ids)
     when :thread_ids
       find_by_thread(message.thread_ids)
+    when :authors
+      find_by_author(message.authors)
     when :message
       find_message(message.message)
     when :start_date_time # lowest date -> <:start_date_time, today>
-      end_date, end_time = Time.now.strftime('%Y%m%dT%H%M%S').split('T')
+      end_date, end_time = Time.now.strftime('%Y-%m-%dT%H:%M:%S').split('T')
       find_by_date_time_interval(message.start_date, message.start_time, end_date, end_time)
     when :tags
       find_by_tags(message.tags)
@@ -131,8 +134,8 @@ class ElasticSearchAdapter
 
   # TODO: search by id is nonsense i think
   #
-  #     [author_id1 and author_id2, ...]
-  # and [thread_id1 and thread_id2, ...]
+  #     [thread_id1 and thread_id2, ...]
+  # and [author1 and author2, ...]
   # and message
   # and between <start_date_time; end_date_time>
   # and [tag1 and tag2, ...]
@@ -143,31 +146,33 @@ class ElasticSearchAdapter
     Tire.search('askme') do
       query do
         boolean do
+          must do
           
-          # author_ids
-          must { boolean { message.author_ids.each { |author_id| should { string "author_ids:#{author_id}" } } if args.include?(:author_ids) } }
+            # authors
+            boolean { message.authors.each { |author| should { string "authors:#{author}" } } } if args.include?(:authors)
 
-          # thread_ids
-          must { boolean { message.thread_ids.each { |thread_id| should{ string "thread_ids:#{thread_id}" } } if args.include?(:thread_ids) } }
+            # thread_ids
+            boolean { message.thread_ids.each { |thread_id| should { string "thread_ids:#{thread_id}" } } } if args.include?(:thread_ids)
 
-          # message
-          must { string "message:#{message.message}" } if args.include?(:message)
+            # message
+            string "message:#{message.message}" if args.include?(:message)
 
-          # <start_date_time; end_date_time>
-          if args.include?(:start_date_time) && args.include?(:end_date_time)
-            must { string "date_time:[#{message.start_date_time} TO #{message.end_date_time}]" }
-          elsif args.include?(:start_date_time)
-            must { string "date_time:[#{message.start_date_time} TO #{Time.now.strftime('%Y%m%dT%H%M%S')}]" }
-          elsif args.include?(:end_date_time)
-            must { string "date_time:[#{Time.at(0).strftime('%Y%m%dT%H%M%S')} TO #{message.end_date_time}]" }
+            # <start_date_time; end_date_time>
+            if args.include?(:start_date_time) && args.include?(:end_date_time)
+              string "date_time:[#{message.start_date_time} TO #{message.end_date_time}]" 
+            elsif args.include?(:start_date_time)
+              string "date_time:[#{message.start_date_time} TO #{Time.now.strftime('%Y-%m-%dT%H:%M:%S')}]"
+            elsif args.include?(:end_date_time)
+              string "date_time:[#{Time.at(0).strftime('%Y-%m-%dT%H:%M:%S')} TO #{message.end_date_time}]"
+            end
+
+            # tags
+            terms :tags, message.tags if args.include?(:tags)
+
+            # recipients
+            boolean { message.recipients.each { |recip| should { string "recipients:#{recip}" } } } if args.include?(:recipients)
+
           end
-
-          # tags
-          must { terms :tags, message.tags } if args.include?(:tags)
-
-          # recipients
-          must { boolean { message.recipients.each { |recip| should { string "recipients:#{recip}" } } if args.include?(:recipients) } }
-
         end
       end
     end.results
