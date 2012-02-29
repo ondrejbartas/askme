@@ -38,7 +38,7 @@ class AskmeSinatra < Sinatra::Base
   # for the elasticsearch
 
   # get a message for the appropriate message id
-  get "/message/:id" do |id|
+  get "/messages/:id" do |id|
     # TODO: exception
     msg = MessageFindModel.new :ids => [id.to_i]
     result = msg.find
@@ -47,16 +47,16 @@ class AskmeSinatra < Sinatra::Base
   end
 
   # get message(s) (complex search query)
-  get '/message' do
+  get '/messages' do
     # TODO: exception
     msg = MessageFindModel.new(params)
     result = msg.find
 
-    render_output "found_message(s)", result
+    render_output 'found_messages', result
   end
 
   # create a message
-  post '/message' do
+  post '/messages' do
     message = params
     message['id'] = RedisID.get(:message)
 
@@ -64,16 +64,16 @@ class AskmeSinatra < Sinatra::Base
     msg = MessageCreateModel.new(message)
     result = msg.save
 
-    render_output "saved_message", result
+    render_output 'saved_message', result
   end
   
   # ++rank
-  post "/rank/inc/:id" do |id|
+  put "/messages/:id/rank/inc" do |id|
     # TODO: call to increase a rank for message id
   end
 
   # --rank
-  post "/rank/dec/:id" do |id|
+  put "/messages/:id/rank/dec/" do |id|
     # TODO: call to descrease a rank for message id
   end
 
