@@ -108,7 +108,11 @@ class ElasticSearchAdapter
     Tire.search('askme') { query { boolean { recipients.each { |recip| should { string "recipients:#{recip}" } } } } }.results
   end
 
-  #protected
+  def self.find_by_rank(rank, tolerance=0)
+    Tire.search('askme') { query { range :rank, :from => rank-tolerance, :to => rank+tolerance } }.results
+  end
+
+  protected
 
   def self.make_simple_query(message)
     args = message.args
@@ -129,10 +133,16 @@ class ElasticSearchAdapter
       find_by_tags(message.tags)
     when :recipients
       find_by_recipients(message.recipients)
+    when :rank
+      tolerance = message.rank_tolerance.nil? ? 0 : message.rank_tolerance
+      find_by_rank(message.rank_value, tolerance)
+    when :location
+      # TODO: geo location
+      raise 'not implemented'
     end
   end
 
-  # TODO: search by id is nonsense i think
+  # note: search by id is nonsense just here i think
   #
   #     [thread_id1 and thread_id2, ...]
   # and [author1 and author2, ...]
@@ -140,6 +150,8 @@ class ElasticSearchAdapter
   # and between <start_date_time; end_date_time>
   # and [tag1 and tag2, ...]
   # and [recipient1 or recipient2, ...]
+  # and [rank, tolerance]
+  # and [location, radius]
   def self.make_complex_query(message)
     args = message.args
 
@@ -171,6 +183,15 @@ class ElasticSearchAdapter
 
             # recipients
             boolean { message.recipients.each { |recip| should { string "recipients:#{recip}" } } } if args.include?(:recipients)
+
+            # rank
+            if args.include?(:rank)
+              tolerance = message.rank_tolerance.nil? ? 0 : message.rank_tolerance
+              range :rank, :from => message.rank_value-tolerance, :to => message.rank_value+tolerance
+            end
+
+            # TODO: geo location
+            raise 'not implemented' if args.include?(:location)
 
           end
         end

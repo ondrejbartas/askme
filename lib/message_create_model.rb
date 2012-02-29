@@ -11,9 +11,11 @@ class MessageCreateModel
   attr_reader :model
 
   attr_accessor :args
-  attr_accessor :id, :thread_id, :author, :message, :tags, :recipients, :location # automatically instantinated
+  attr_accessor :id, :thread_id, :author, :message, :tags, :recipients, :rank, :location # automatically instantinated
   
-  attr_reader :date, :time, :date_time # computed
+  # computed
+  attr_reader :date, :time, :date_time
+  attr_reader :location_lat, :location_lon
 
   #
   # <field> : <field_type>
@@ -28,7 +30,9 @@ class MessageCreateModel
       :date_time  => [:String, MessageModel::DATE_TIME_REGEXP, MessageModel::DATE_TIME_FORMAT],
       :tags       => [:Array, :String],
       :recipients => [:Array, :String],
+      :rank       => :Fixnum, # default = 0
       :location   => { :lat => :Fixnum, :lon => :Fixnum }
+      #:location   => [:Array, :Fixnum] # [lat, lon]
     },
     :required => [ :id, :thread_id, :author, :message ]
   }
@@ -46,6 +50,12 @@ class MessageCreateModel
     @tags, @recipients = parse_message(@message)
     @args[:tags] ||= @tags
     @args[:recipients] ||= @recipients
+
+    @rank = 0 unless @rank.nil?
+    @args[:rank] ||= @rank
+
+    @location_lat, @location_lon = @location.values unless @location.nil?
+    #@location_lat, @location_lon = @location unless @location.nil?
   end
 
   # --- for elasticsearch adapter

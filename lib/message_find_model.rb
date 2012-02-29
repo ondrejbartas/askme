@@ -11,9 +11,12 @@ class MessageFindModel
   attr_reader :model
 
   attr_accessor :args
-  attr_accessor :ids, :thread_ids, :authors, :message, :start_date_time, :end_date_time, :tags, :recipients, :location # automatically instantinated
+  attr_accessor :ids, :thread_ids, :authors, :message, :start_date_time, :end_date_time, :tags, :recipients, :rank, :location # automatically instantinated
   
-  attr_reader :start_date, :start_time, :end_date, :end_time # computed
+  # computed
+  attr_reader :start_date, :start_time, :end_date, :end_time
+  attr_reader :rank_value, :rank_tolerance
+  attr_reader :location_lat, :location_lon, :location_radius
 
   #
   # <field> : <field_type>
@@ -29,7 +32,9 @@ class MessageFindModel
       :end_date_time    => [:String, MessageModel::DATE_TIME_REGEXP, MessageModel::DATE_TIME_FORMAT],
       :tags             => [:Array, :String],
       :recipients       => [:Array, :String],
-      :location         => { :lat => :Fixnum, :lon => :Fixnum }
+      :rank             => [:Array, :Fixnum], # [rank, tolerance] -> <rank-tolerance; rank+tolerance>
+      :location         => { :lat => :Fixnum, :lon => :Fixnum, :radius => :Fixnum }
+      #:location         => [:Array, :Fxinum]  # [lat, lon, radius] -> [lat, lon] +- radius
     }
   }
 
@@ -41,6 +46,10 @@ class MessageFindModel
 
     @start_date, @start_time = @start_date_time.split('T') unless @start_date_time.nil?
     @end_date, @end_time = @end_date_time.split('T') unless @end_date_time.nil?
+
+    @rank_value, @rank_tolerance = @rank unless @rank.nil?
+    @location_lat, @location_lon, @location_radius = @location.values unless @location.nil?
+    #@location_lat, @location_lon, @location_radius = @location unless @location.nil?
   end
 
   # --- for elasticsearch adapter
