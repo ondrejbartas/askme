@@ -10,7 +10,7 @@ class MessageCreateModel
 
   attr_reader :model
 
-  attr_accessor :args
+  attr_reader :args
   attr_accessor :id, :thread_id, :author, :message, :tags, :recipients, :rank, :location # automatically instantinated
   
   # computed
@@ -51,7 +51,7 @@ class MessageCreateModel
     @args[:tags] ||= @tags
     @args[:recipients] ||= @recipients
 
-    @rank = 0 unless @rank.nil?
+    @rank = 0 if @rank.nil?
     @args[:rank] ||= @rank
 
     @location_lat, @location_lon = @location.values unless @location.nil?
@@ -61,6 +61,7 @@ class MessageCreateModel
   # --- for elasticsearch adapter
 
   def save
+    synchronize_fields
     err_msg = validate_before_save
     raise err_msg.join("\n") unless err_msg.empty?
 		
@@ -73,6 +74,11 @@ class MessageCreateModel
     tags = message.scan(/\s+#([^\s.,;:]+)/).flatten
     recipients = message.scan(/\s+@([^\s.,;:]+)/).flatten
     return tags, recipients
+  end
+
+  # args[attr] <- attr
+  def synchronize_fields
+    MODEL[:fields].keys.each { |field| @args[field] = method(field).call if @args.include?(field) }
   end
 
 end

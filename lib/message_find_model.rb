@@ -10,8 +10,8 @@ class MessageFindModel
 
   attr_reader :model
 
-  attr_accessor :args
-  attr_accessor :ids, :thread_ids, :authors, :message, :start_date_time, :end_date_time, :tags, :recipients, :rank, :location # automatically instantinated
+  attr_reader :args
+  attr_reader :ids, :thread_ids, :authors, :message, :start_date_time, :end_date_time, :tags, :recipients, :rank, :location # automatically instantinated
   
   # computed
   attr_reader :start_date, :start_time, :end_date, :end_time

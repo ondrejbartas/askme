@@ -37,7 +37,7 @@ class AskmeSinatra < Sinatra::Base
   
   # for the elasticsearch
 
-  # get a message for the appropriate message id
+  # get a message for the appropriate message id : curl -XGET http://127.0.0.1:9393/messages/1
   get "/messages/:id" do |id|
     # TODO: exception
     msg = MessageFindModel.new :ids => [id.to_i]
@@ -67,14 +67,24 @@ class AskmeSinatra < Sinatra::Base
     render_output 'saved_message', result
   end
   
-  # ++rank
+  # ++rank : curl -XPUT http://127.0.0.1:9393/messages/1/rank/inc -d ''
   put "/messages/:id/rank/inc" do |id|
-    # TODO: call to increase a rank for message id
+    # TODO: exception
+    msg = MessageUpdateModel.new :ids => [id.to_i]
+    msg.message.rank += 1
+    result = msg.update
+    
+    render_output 'updated_message', result
   end
 
-  # --rank
-  put "/messages/:id/rank/dec/" do |id|
-    # TODO: call to descrease a rank for message id
+  # --rank : curl -XPUT http://127.0.0.1:9393/messages/1/rank/dec -d ''
+  put "/messages/:id/rank/dec" do |id|
+    # TODO: exception
+    msg = MessageUpdateModel.new :ids => [id.to_i]
+    msg.message.rank -= 1
+    result = msg.update
+    
+    render_output 'updated_message', result
   end
 
 end
