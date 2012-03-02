@@ -44,7 +44,11 @@ class MessageCreateModel
     @args = args
     @args.each_pair { |name, value| instance_variable_set(:"@#{name}", value) }
 
-    compute_fields
+    @date, @time = Time.now.getutc.to_s.split(" ")
+    @date_time = "#{@date}T#{@time}"
+    @args[:date_time] ||= @date_time
+
+    parse_message
 
     @rank = 0 if @rank.nil?
     @args[:rank] ||= @rank
@@ -65,25 +69,17 @@ class MessageCreateModel
 
   protected
 
-  def parse_message(message)
-    tags = message.scan(/\s+#([^\s.,;:]+)/).flatten
-    recipients = message.scan(/\s+@([^\s.,;:]+)/).flatten
-    return tags, recipients
-  end
-
-  def compute_fields
-    @date, @time = Time.now.getutc.to_s.split(" ")
-    @date_time = "#{@date}T#{@time}"
-    @args[:date_time] ||= @date_time
-
-    @tags, @recipients = parse_message(@message)
+  def parse_message
+    @tags = @message.scan(/\s+#([^\s.,;:]+)/).flatten
     @args[:tags] ||= @tags
+    
+    @recipients = @message.scan(/\s+@([^\s.,;:]+)/).flatten
     @args[:recipients] ||= @recipients
   end
 
-  # args[attr] <- attr
+  # for update: args[attr] <- attr
   def synchronize_fields
-    compute_fields
+    parse_message
     MODEL[:fields].keys.each { |field| @args[field] = method(field).call if @args.include?(field) }
   end
 
