@@ -1,6 +1,5 @@
 # encoding: utf-8
 # author: rpolasek
-# vim:ff=unix ts=2 ss=2 sts=2 et
 
 # TODO: custom exception
 # TODO: hash (geo location) validation
@@ -144,3 +143,5 @@ module MessageModel
   end
 
 end
+
+# vim:ff=unix ts=2 ss=2 sts=2 et

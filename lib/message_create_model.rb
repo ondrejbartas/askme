@@ -1,19 +1,20 @@
 # encoding: utf-8
 # author: rpolasek
-# vim:ff=unix ts=2 ss=2 sts=2 et
 
 # TODO: custom exception
+# TODO: geo location
 
 class MessageCreateModel
 
   include MessageModel
 
   attr_reader :model
-
   attr_reader :args
-  attr_accessor :id, :thread_id, :author, :message, :tags, :recipients, :rank, :location # automatically instantinated
+  
+  attr_accessor :id, :thread_id, :author, :message, :rank, :location # automatically instantinated
   
   # computed
+  attr_reader :tags, :recipients
   attr_reader :date, :time, :date_time
   attr_reader :location_lat, :location_lon
 
@@ -43,13 +44,7 @@ class MessageCreateModel
     @args = args
     @args.each_pair { |name, value| instance_variable_set(:"@#{name}", value) }
 
-    @date, @time = Time.now.getutc.to_s.split(" ")
-    @date_time = "#{@date}T#{@time}"
-    @args[:date_time] ||= @date_time
-
-    @tags, @recipients = parse_message(@message)
-    @args[:tags] ||= @tags
-    @args[:recipients] ||= @recipients
+    compute_fields
 
     @rank = 0 if @rank.nil?
     @args[:rank] ||= @rank
@@ -76,9 +71,22 @@ class MessageCreateModel
     return tags, recipients
   end
 
+  def compute_fields
+    @date, @time = Time.now.getutc.to_s.split(" ")
+    @date_time = "#{@date}T#{@time}"
+    @args[:date_time] ||= @date_time
+
+    @tags, @recipients = parse_message(@message)
+    @args[:tags] ||= @tags
+    @args[:recipients] ||= @recipients
+  end
+
   # args[attr] <- attr
   def synchronize_fields
+    compute_fields
     MODEL[:fields].keys.each { |field| @args[field] = method(field).call if @args.include?(field) }
   end
 
 end
+
+# vim:ff=unix ts=2 ss=2 sts=2 et

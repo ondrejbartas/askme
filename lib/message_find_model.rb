@@ -1,16 +1,16 @@
 # encoding: utf-8
 # author: rpolasek
-# vim:ff=unix ts=2 ss=2 sts=2 et
 
 # TODO: custom exception
+# TODO: geo location
 
 class MessageFindModel
 
   include MessageModel
 
   attr_reader :model
-
   attr_reader :args
+
   attr_reader :ids, :thread_ids, :authors, :message, :start_date_time, :end_date_time, :tags, :recipients, :rank, :location # automatically instantinated
   
   # computed
@@ -62,3 +62,5 @@ class MessageFindModel
   end
 
 end
+
+# vim:ff=unix ts=2 ss=2 sts=2 et

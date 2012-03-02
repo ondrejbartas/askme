@@ -35,42 +35,36 @@ class AskmeSinatra < Sinatra::Base
     render_output
   end
   
-  # for the elasticsearch
+  # --- for the elasticsearch
+  # TODO: custom exception
 
   # get a message for the appropriate message id : curl -XGET http://127.0.0.1:9393/messages/1
   get "/messages/:id" do |id|
-    # TODO: exception
-    msg = MessageFindModel.new :ids => [id.to_i]
-    result = msg.find
-
+    result = MessageFindModel.new(:ids=>[id.to_i]).find
+    
     render_output 'found_message', result[0]
   end
 
   # get message(s) (complex search query)
   get '/messages' do
-    # TODO: exception
-    msg = MessageFindModel.new(params)
-    result = msg.find
-
+    result = MessageFindModel.new(params).find
+    
     render_output 'found_messages', result
   end
 
   # create a message
   post '/messages' do
-    message = params
+    message = params.clone
     message['id'] = RedisID.get(:message)
 
-    # TODO: exception
-    msg = MessageCreateModel.new(message)
-    result = msg.save
+    result = MessageCreateModel.new(message).save
 
     render_output 'saved_message', result
   end
   
   # ++rank : curl -XPUT http://127.0.0.1:9393/messages/1/rank/inc -d ''
   put "/messages/:id/rank/inc" do |id|
-    # TODO: exception
-    msg = MessageUpdateModel.new :ids => [id.to_i]
+    msg = MessageUpdateModel.new(:ids=>[id.to_i])
     msg.message.rank += 1
     result = msg.update
     
@@ -79,8 +73,7 @@ class AskmeSinatra < Sinatra::Base
 
   # --rank : curl -XPUT http://127.0.0.1:9393/messages/1/rank/dec -d ''
   put "/messages/:id/rank/dec" do |id|
-    # TODO: exception
-    msg = MessageUpdateModel.new :ids => [id.to_i]
+    msg = MessageUpdateModel.new(:ids=>[id.to_i])
     msg.message.rank -= 1
     result = msg.update
     
