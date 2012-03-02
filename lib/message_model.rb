@@ -68,10 +68,14 @@ module MessageModel
 
   def validate_before_find
     errors = []
-    # validate all fields (they may be nil or '')
-    @model[:fields].keys.each do |field|
-      unless args[field].nil?
-        errors << error_msg(field) unless valid?(field)
+    if args.empty?
+      errors << 'empty query is not allowed'
+    else
+      # validate all fields (they may be nil or '')
+      @model[:fields].keys.each do |field|
+        unless args[field].nil?
+          errors << error_msg(field) unless valid?(field)
+        end
       end
     end
     return errors
