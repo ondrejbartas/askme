@@ -21,7 +21,6 @@ class ElasticSearchAdapter
 
   def self.find(message)
     raise 'unknown message to find' unless message.is_a?(MessageFindModel)
-    raise 'empty query' if message.args.keys.size == 0
     
     execute_query(message).results
   end
@@ -36,8 +35,6 @@ class ElasticSearchAdapter
 
   protected
 
-  # note: search by id is nonsense just here i think
-  #
   #     [thread_id1 or thread_id2, ...]
   # and [author1 or author2, ...]
   # and message
@@ -83,7 +80,7 @@ class ElasticSearchAdapter
           # rank
           if args.include?(:rank)
             tolerance = message.rank_tolerance.nil? ? 0 : message.rank_tolerance
-            must { range :rank, :from => message.rank_value-tolerance, :to => message.rank_value+tolerance } 
+            must { range :rank, :from=>message.rank_value-tolerance, :to=>message.rank_value+tolerance } 
           end
 
           # TODO: geo location
@@ -95,13 +92,4 @@ class ElasticSearchAdapter
    
   end
 
-  private
-
-  def self.date_contains?(date_time)
-    date_time.match(/2\d{3}-(0\d|1[0-2])-([0-2]\d|3[01])/) != nil
-  end
-
-  def self.time_contains?(date_time)
-    date_time.match(/([01]\d|2[0-3]):[0-5]\d:[0-5]\d/) != nil
-  end
 end
