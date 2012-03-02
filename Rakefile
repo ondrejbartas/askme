@@ -86,6 +86,8 @@ namespace :redis do
   end
 end
 
+# --- elasticsearch adapter
+
 # it does not solve the elasticsearch installation
 ELASTIC_PID = File.join(PIDS_DIR, 'elastic.pid')
 namespace :elastic do
@@ -109,6 +111,16 @@ namespace :elastic do
       Process.kill('INT', File.read(ELASTIC_PID).to_i)
       FileUtils.rm(ELASTIC_PID)
       puts 'elasticsearch stopped'
+    end
+  end
+end
+
+namespace :test do
+  namespace :unit do
+    Rake::TestTask.new(:elastic) do |t|
+      t.test_files = FileList['test/unit/**/elastic*.rb']
+      t.warning = false
+      t.verbose = false
     end
   end
 end
