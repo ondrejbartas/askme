@@ -24,6 +24,8 @@ require 'tire'
 
 ENV['RACK_ENV'] ||= "development"
 
+autoload :MessageModel, File.join(File.dirname(__FILE__),'/lib/message_model.rb')
+
 #including lib
 Dir[File.join(File.dirname(__FILE__),"/lib/*.rb")].each {|file| require file }
 
