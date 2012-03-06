@@ -57,10 +57,10 @@ class ElasticSearchAdapter
           message.thread_ids.each { |thread_id| should { string "thread_id:#{thread_id}" } } if args.include?(:thread_ids) 
 
           # author
-          message.authors.each { |author| should { string "author:#{author}" } } if args.include?(:authors)
+          message.authors.each { |author| must { string "author:#{author}" } } if args.include?(:authors)
 
           # message
-          must { string "message:#{message.message}" } if args.include?(:message)
+          must { string "message:*#{message.message}*" } if args.include?(:message)
 
           # <start_date_time; end_date_time>
           if args.include?(:start_date_time) && args.include?(:end_date_time)

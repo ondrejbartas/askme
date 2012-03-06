@@ -46,9 +46,11 @@ class AskmeSinatra < Sinatra::Base
 
   # get message(s) (complex search query)
   get '/messages' do
-    result = MessageFindModel.new(params).find
-    
-    render_output 'found_messages', result
+    args = params.symbolize_keys
+    args[:authors] = args[:message].scan(/@([^\s.,;:]+)/).flatten
+    args[:message].gsub!(/@([^\s.,;:]+)/,"")
+    result = MessageFindModel.new(args).find
+    return JSON.pretty_generate(result.results)
   end
 
   # create a message
