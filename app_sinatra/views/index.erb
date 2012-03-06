@@ -1,2 +1,15 @@
-<h1>Askme</h1>
-Index page :-)
+<h1 class="header">AskMe</h1>
+
+<div id="searchview">
+  <textarea type="text" name="message" id="message" cols="90" rows="6" placeholder="message" ></textarea>
+  <input type="hidden" name="geo_lat" id="geo_lat" />
+  <input type="hidden" name="geo_lon" id="geo_lon" />
+  <input type="button" name="action" id="send" value="Send" />
+  <input type="button" name="action" id="search" value="Search" />
+</div>
+<div id="askmeapp"></div>
+<ul id="output">
+</ul>
+
+<%= html :model_templates%>
+<div class="location">Your location: <span id="status">checking...</span></div>

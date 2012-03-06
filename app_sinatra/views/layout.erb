@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <title>Askme</title>
     <link rel="shortcut icon" href="http://<%= request.env["HTTP_HOST"] %>/favicon.ico" />
-  </head>  
+    <script type="text/javascript" src="http://j.maxmind.com/app/geoip.js" ></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+    <%= include_javascripts %>
+    <%= include_stylesheets %>
   <body>
-    <%= yield %>
+    <div class="page">
+      <%= yield %>
+    </div>
   </body>
 </html>
