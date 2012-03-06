@@ -14,6 +14,8 @@ gem "sinatra", "~> 1.2.6"
 
 gem "mail"
 
+gem "redis-model-extension"
+
 gem "tire"
 
 group :test do

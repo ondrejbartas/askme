@@ -18,6 +18,8 @@ require 'logger'
 
 require 'mail'
 
+require 'redis-model-extension'
+
 require 'tire'
 
 ENV['RACK_ENV'] ||= "development"

@@ -1,8 +1,6 @@
 # -*- encoding : utf-8 -*-
 class User
-  
-  attr_accessor :user_id, :name, :email, :password, :token, :reset_token
-  
+    
 # Example object in REDIS
 # redis key:        user:id:user_id             #for searching by id
 #   hash structure:   user_id, name, email, password, token, reset_token
