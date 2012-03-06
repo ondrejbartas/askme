@@ -55,11 +55,17 @@ class AskmeSinatra < Sinatra::Base
 
   # create a message
   post '/messages' do
-    message = params.clone
-    message['id'] = RedisID.get(:message)
-
-    result = MessageCreateModel.new(message).save
-
+    if params.size == 0
+      #if params are in post body -> strip them
+      message = JSON.parse(request.body.read.to_s) 
+    else 
+      #params are in header or url
+      message = params.clone
+    end
+    message["author"] = "Josifek"
+    message["id"] = RedisId.get(:message)
+    message["thread_id"] = message["id"] if message["thread_id"].nil?
+    result = MessageCreateModel.new(message.symbolize_keys).save
     render_output 'saved_message', result
   end
   
