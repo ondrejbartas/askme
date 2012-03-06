@@ -1,0 +1,95 @@
+* {
+	margin:0px;
+	padding:0px;
+	border:none;
+	font-family: 'HelveticaNeue-Light','Helvetica Neue Light',helvetica, arial,sans-serif !important;
+	font-size:12pt;
+	color:#444;
+	line-height:1.3em;
+}
+
+body {
+	font-family: 'HelveticaNeue-Light','Helvetica Neue Light',helvetica, arial,sans-serif !important;
+}
+
+h1 {
+	font-size:30pt;
+}
+h1,h2,h3,h4,h5 {
+	color:#666;
+	font-weight:400;
+}
+
+#searchview {
+	padding-left:30px;
+	padding-right:30px;
+	border-top:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	text-align:center;
+}
+#searchview #message {
+	padding:10px;
+	margin-bottom:10px;
+}
+#searchview input[type="button"] {
+	width:40%;
+	height:30px;
+	background: rgb(125,126,125); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgb(125,126,125) 0%, rgb(14,14,14) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(125,126,125)), color-stop(100%,rgb(14,14,14))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* W3C */
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color:#efefef;
+	font-weight:600;
+	text-shadow: 2px 2px 2px #000;
+	cursor:pointer;
+	-o-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-khtml-transition: all 0.3s ease-out;
+	-webkit-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+	opacity:0.7;
+}
+
+#searchview input[type="button"]:hover {
+	opacity:1.0;
+}
+
+#output {
+	margin-top:20px;
+	margin-bottom:20px;
+	list-style:none;
+}
+#output .message {
+	padding:10px;
+	border-bottom:1px solid #ddd;
+	clear:both;
+	min-height:40px;
+}
+#output .message-info {
+	float:right;
+	text-align:right;
+	width:150px;
+}
+
+#output .message-message {
+	margin-right:160px;
+}
+#output .message-author {
+	font-size:14px;
+	color:#777;
+}
+#output .message-date_time {
+	font-size:11px;
+	color:#777;
+}
+#output .message-geo span {
+	font-size:11px;
+	color:#777;
+}
