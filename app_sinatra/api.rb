@@ -3,7 +3,7 @@ class AskmeSinatra < Sinatra::Base
   
   def render_output name = nil, items = nil
     content_type :json
-    output = {:status => "ok", :message => "ok", :executed_at => Time.now.strftime("%Y-%m-%d %H:%M:%S") }
+    output = {:status => "ok", :status_message => "ok", :executed_at => Time.now.strftime("%Y-%m-%d %H:%M:%S") }
     output[name] = items unless name.nil?
     return JSON.pretty_generate(output)
   end
@@ -24,7 +24,7 @@ class AskmeSinatra < Sinatra::Base
 
   #Create user
   post "/users" do
-    message_id = RedisID.get(:user)
+    message_id = RedisId.get(:user)
     #Code for creating messsage goes there
     render_output
   end
@@ -41,8 +41,7 @@ class AskmeSinatra < Sinatra::Base
   # get a message for the appropriate message id : curl -XGET http://127.0.0.1:9393/messages/1
   get "/messages/:id" do |id|
     result = MessageFindModel.new(:ids=>[id.to_i]).find
-    
-    render_output 'found_message', result[0]
+    render_output 'messages', result[0]
   end
 
   # get message(s) (complex search query)

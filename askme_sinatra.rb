@@ -11,7 +11,7 @@ end
 class AskmeSinatra < Sinatra::Base
   set :views, File.dirname(__FILE__) + '/app_sinatra/views'
   set :show_exceptions, false
-    
+        
   error do
     content_type :json
     
@@ -20,7 +20,7 @@ class AskmeSinatra < Sinatra::Base
     error_code = 400 if env["sinatra.error"].class == ArgumentError
     
     #compose output JSON
-    output = {:status => "error", :executed_at => Time.now.strftime("%Y-%m-%d %H:%M:%S"), :message => env["sinatra.error"].message}
+    output = {:status => "error", :executed_at => Time.now.strftime("%Y-%m-%d %H:%M:%S"), :status_message => env["sinatra.error"].message}
     
     #allow to show backtrace on development and test environment
     output[:backtrace] = env["sinatra.error"].backtrace if ["test", "development"].include?(ENV['RACK_ENV'])
