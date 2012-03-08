@@ -28,8 +28,14 @@ function geo_error(msg) {
   // console.log(arguments);
 }
 
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(geo_success, geo_by_ip);
-} else {
-  geo_by_ip();
-}
+$(function(){
+
+	geo_by_ip();
+
+	if (navigator.geolocation) {
+	  navigator.geolocation.getCurrentPosition(geo_success, geo_by_ip);
+	} else {
+	  geo_by_ip();
+	}
+
+});
