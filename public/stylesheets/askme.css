@@ -5,7 +5,9 @@ body {
 .page {
 	margin-right:auto;
 	margin-left:auto;
+	padding-bottom:20px;
 	width:700px;
+	min-height:500px;
 	background:#efefef;	
 	-webkit-box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 1);
 	-moz-box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 1);
@@ -15,18 +17,94 @@ body {
 .header {
 	text-align:right;
 	padding:20px;
+	padding-bottom:0px;
 	padding-top:10px;
 	text-shadow: 2px 2px 2px #cccccc;
 	filter: dropshadow(color=#cccccc, offx=2, offy=2);
 }
 
 .location {
-	position:relative;
-	top:30px;
 	padding:5px;
-	text-align:right;
+	text-align:center;
 }
 .location, .location span {
 	font-size:11px;
 	color:#aaa;
+}
+
+p {
+	margin:20px;
+}
+
+.button,.auth_form input[type="submit"]  {
+	text-decoration:none;
+	display:inline-block;
+	padding:5px;
+	padding-left:10px;
+	padding-right:10px;
+	margin-right:20px;
+	background: rgb(125,126,125); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgb(125,126,125) 0%, rgb(14,14,14) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(125,126,125)), color-stop(100%,rgb(14,14,14))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgb(125,126,125) 0%,rgb(14,14,14) 100%); /* W3C */
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color:#efefef;
+	font-weight:600;
+	text-shadow: 2px 2px 2px #000;
+	cursor:pointer;
+	-o-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-khtml-transition: all 0.3s ease-out;
+	-webkit-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+	opacity:0.7;
+}
+.button:hover, .auth_form input[type="submit"]:hover {
+	opacity:1.0;
+}
+
+
+.user_box {
+	padding-right:20px;
+	text-align:right;
+	margin-bottom:20px;
+	-o-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-khtml-transition: all 0.3s ease-out;
+	-webkit-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+	opacity:0.7;	
+}
+.user_box:hover {
+	opacity:1.0;
+}
+
+.content_wrapper { 
+	padding:20px;
+}
+
+.auth_form input[type="text"], .auth_form input[type="password"] {
+	border:1px solid #ddd;
+	margin-top:10px;
+	margin-bottom:10px;
+	display:block;
+	width:80%;
+	padding:5px;
+	font-size:20px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color:#444;
+}
+
+.forgot_password { 
+	display:block;
+	padding-top:30px;
 }

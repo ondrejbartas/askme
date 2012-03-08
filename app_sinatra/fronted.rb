@@ -10,5 +10,10 @@ class AskmeSinatra < Sinatra::Base
   get '/' do
     erb :index
   end
+
+  get '/app' do
+    login_required
+    erb :app
+  end
   
 end

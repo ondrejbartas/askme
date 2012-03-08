@@ -1,15 +1,14 @@
-<h1 class="header">AskMe</h1>
+<p>
+  Hello,<br/ >
+  AskMe is web online application for sharing thoughts ideas and provide easy to use and
+  flexible communication tool for small to huge groups of people.
+</p>
 
-<div id="searchview">
-  <textarea type="text" name="message" id="message" cols="90" rows="6" placeholder="message" ></textarea>
-  <input type="hidden" name="geo_lat" id="geo_lat" />
-  <input type="hidden" name="geo_lon" id="geo_lon" />
-  <input type="button" name="action" id="send" value="Send" />
-  <input type="button" name="action" id="search" value="Search" />
-</div>
-<div id="askmeapp"></div>
-<ul id="output">
-</ul>
-
-<%= html :model_templates%>
-<div class="location">Your location: <span id="status">checking...</span></div>
+<p>
+  <% if @current_user %>
+    <a href="/app" class="button">Go to application</a>
+  <% else %>
+    <a href="/sign_in" class="button">Sign In</a>
+    <a href="/sign_up" class="button">Sign Up</a>
+  <% end%>
+</p>

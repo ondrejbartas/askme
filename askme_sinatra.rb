@@ -6,9 +6,14 @@ require 'erb'
 def get_or_post(path, opts={}, &block)
   get(path, opts, &block)
   post(path, opts, &block)
-end  
+end
 
 class AskmeSinatra < Sinatra::Base
+  register Sinatra::SinatraRedisAuth
+  set :sinatra_redis_auth_views, File.dirname(__FILE__) + '/app_sinatra/views/auth'
+  set :default_url_after_sign_in, "/app"
+  set :default_url_after_sign_up, "/app"
+  set :default_url_after_sign_out, "/"
   set :views, File.dirname(__FILE__) + '/app_sinatra/views'
   set :show_exceptions, false
         

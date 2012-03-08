@@ -10,7 +10,23 @@
     <%= include_stylesheets %>
   <body>
     <div class="page">
+      <a href="/"><h1 class="header">AskMe</h1></a>
+      <% if @current_user %>
+        <div class="user_box">
+          <span id="user_name"><%= @current_user.get_name %></span> | 
+          <a href="/sign_out">Sing out</a>
+        </div>
+      <% end %>
+      <% if flash[:notice] %>
+        <div class="flash_message notice"><%= flash[:notice] %></div>
+      <% end %>
+      <% if flash[:error] %>
+        <div class="flash_message error"><%= flash[:error] %></div>
+      <% end %>
+      
       <%= yield %>
     </div>
+    <div class="location">Your location: <span id="status">checking...</span></div>
+    <%= html :model_templates%>
   </body>
 </html>

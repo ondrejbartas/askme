@@ -1,33 +1,32 @@
 # -*- encoding : utf-8 -*-
 class User
-    
-# Example object in REDIS
-# redis key:        user:id:user_id             #for searching by id
-#   hash structure:   user_id, name, email, password, token, reset_token
-#
-# redis alias key:  user:email:email            #for authentication
-# redis alias key:  user:token:token            #for authentication
-# redis alias key:  user:reset_token:token      #for authentication
-   
-   
-   REDIS_MODEL_CONF = {
-     :fields => { 
-       :user_id => :to_i,
-       :name => :to_s,
-       :email => :to_s,
-       :password => :to_s,
-       :token => :to_s,
-       :reset_token => :to_s
-      }, 
-      :required => [:user_id],
-      :redis_key => [:user_id],
-      :redis_aliases => {
-        :token => [:token],
-        :reset_token => [:reset_token],
-      }
-   }
-   include RedisModel
-   initialize_redis_model_methods REDIS_MODEL_CONF
+  
+  REDIS_MODEL_CONF = {
+    :fields => {
+      :name => :to_s,
+      :email => :to_s,
+      :password => :to_s,
+      :salt => :to_s,
+      :reset_token => :to_s,
+    }, 
+    :required => [:email,:password],
+    :redis_key => [:email],
+    :redis_aliases => {
+      :reset_token => [:reset_token]
+    }
+  }
+  include RedisModel
+  initialize_redis_model_methods REDIS_MODEL_CONF
+  include UserAuthModel
 
 
+  def get_name 
+    pp self.name
+    pp self.email
+    if self.name && self.name.size > 0
+      self.name
+    else
+      self.email
+    end
+  end
 end

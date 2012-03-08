@@ -19,6 +19,7 @@ require 'logger'
 require 'mail'
 
 require 'redis-model-extension'
+require 'sinatra-redis-auth'
 
 require 'tire'
 

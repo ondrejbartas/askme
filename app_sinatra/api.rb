@@ -40,12 +40,14 @@ class AskmeSinatra < Sinatra::Base
 
   # get a message for the appropriate message id : curl -XGET http://127.0.0.1:9393/messages/1
   get "/messages/:id" do |id|
+    login_required
     result = MessageFindModel.new(:ids=>[id.to_i]).find
     render_output 'messages', result[0]
   end
 
   # get message(s) (complex search query)
   get '/messages' do
+    login_required
     args = params.symbolize_keys
     args[:authors] = args[:message].scan(/@([^\s.,;:]+)/).flatten
     args[:message].gsub!(/@([^\s.,;:]+)/,"")
@@ -55,6 +57,7 @@ class AskmeSinatra < Sinatra::Base
 
   # create a message
   post '/messages' do
+    login_required
     if params.size == 0
       #if params are in post body -> strip them
       message = JSON.parse(request.body.read.to_s) 
@@ -62,7 +65,7 @@ class AskmeSinatra < Sinatra::Base
       #params are in header or url
       message = params.clone
     end
-    message["author"] = "Josifek"
+    message["author"] = @current_user.get_name
     message["id"] = RedisId.get(:message)
     message["thread_id"] = message["id"] if message["thread_id"].nil?
     result = MessageCreateModel.new(message.symbolize_keys).save
@@ -71,6 +74,7 @@ class AskmeSinatra < Sinatra::Base
   
   # ++rank : curl -XPUT http://127.0.0.1:9393/messages/1/rank/inc -d ''
   put "/messages/:id/rank/inc" do |id|
+    login_required
     msg = MessageUpdateModel.new(:ids=>[id.to_i])
     msg.message.rank += 1
     result = msg.update
@@ -80,6 +84,7 @@ class AskmeSinatra < Sinatra::Base
 
   # --rank : curl -XPUT http://127.0.0.1:9393/messages/1/rank/dec -d ''
   put "/messages/:id/rank/dec" do |id|
+    login_required
     msg = MessageUpdateModel.new(:ids=>[id.to_i])
     msg.message.rank -= 1
     result = msg.update

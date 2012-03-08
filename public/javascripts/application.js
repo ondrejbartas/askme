@@ -7,6 +7,7 @@ $(function(){
 	 defaults: function() {
 			var date = new Date();
 	      return {
+					author: $("#user_name").text(),
 	        date_time: $D(date).strftime("%Y-%m-%dT%H-%M-%S"),
 	      };
 	    },
