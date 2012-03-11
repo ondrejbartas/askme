@@ -44,6 +44,8 @@ class MessageFindModel
     @args = args
     @args.each_pair { |name, value| instance_variable_set(:"@#{name}", value) }
 
+    parse_message
+
     @start_date, @start_time = @start_date_time.split('T') unless @start_date_time.nil?
     @end_date, @end_time = @end_date_time.split('T') unless @end_date_time.nil?
 
@@ -59,6 +61,28 @@ class MessageFindModel
     raise err_msg.join("\n") unless err_msg.empty?
 		
     ElasticSearchAdapter.find(self)
+  end
+
+  protected
+
+  def parse_message
+    unless @message.nil?
+      
+      if @tags.nil? || @tags.empty?
+        @tags = @message.scan(/\s+#([^\s.,;:]+)/).flatten
+        @args[:tags] ||= @tags
+      end
+      
+      if @recipients.nil? || @recipients.empty?
+        @recipients = @message.scan(/\s+@([^\s.,;:]+)/).flatten
+        @args[:recipients] ||= @recipients
+      end
+
+      # remove tags and recipients from the messsage
+      @message.gsub!(/\s#[^\s.,;:]+/, '')
+      @message.gsub!(/\s@[^\s.,;:]+/, '')
+
+    end
   end
 
 end
