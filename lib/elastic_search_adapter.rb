@@ -54,10 +54,10 @@ class ElasticSearchAdapter
           message.ids.each { |id| should { string "id:#{id}" } } if args.include?(:ids)
 
           # thread_id
-          message.thread_ids.each { |thread_id| should { string "thread_id:#{thread_id}" } } if args.include?(:thread_ids) 
+          must { boolean { message.thread_ids.each { |thread_id| should { string "thread_id:#{thread_id}" } } } } if args.include?(:thread_ids) 
 
           # author
-          message.authors.each { |author| must { string "author:#{author}" } } if args.include?(:authors)
+          must { boolean { message.authors.each { |author| should { string "author:#{author}" } } } } if args.include?(:authors)
 
           # message
           must { string "message:*#{message.message}*" } if args.include?(:message)
