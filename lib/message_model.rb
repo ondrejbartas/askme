@@ -1,7 +1,6 @@
 # encoding: utf-8
 # author: rpolasek
 
-# TODO: custom exception
 # TODO: hash (geo location) validation
 
 module MessageModel
@@ -94,7 +93,7 @@ module MessageModel
     case field_spec[0]
     when :Array then eval(field_spec[1].to_s) # String
     when :String then field_spec[1]           # Regexp
-    else raise 'unknown value type to validate'
+    else raise TypeError.new('unknown value type to validate')
     end
   end
 
@@ -124,7 +123,7 @@ module MessageModel
           return true # check is not required
         end
       else
-        raise 'unknown field type to validate'
+        raise TypeError.new('unknown field type to validate')
       end
 		
     elsif field_spec.is_a?(Hash)
