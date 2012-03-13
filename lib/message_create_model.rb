@@ -1,7 +1,6 @@
 # encoding: utf-8
 # author: rpolasek
 
-# TODO: custom exception
 # TODO: geo location
 
 class MessageCreateModel
@@ -62,7 +61,7 @@ class MessageCreateModel
   def save
     synchronize_fields
     err_msg = validate_before_save
-    raise err_msg.join("\n") unless err_msg.empty?
+    raise ElasticSearchCreateError.new(err_msg.join("\n")) unless err_msg.empty?
 		
     ElasticSearchAdapter.save(self)
   end

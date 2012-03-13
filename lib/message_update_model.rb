@@ -1,8 +1,6 @@
 # encoding: utf-8
 # author: rpolasek
 
-# TODO: custom exception
-
 class MessageUpdateModel
 
   include MessageModel
@@ -11,7 +9,7 @@ class MessageUpdateModel
 
   def initialize(args)
     result = MessageFindModel.new(args).find
-    raise 'not found' if result.empty?
+    raise ElasticSearchUpdateError.new('no message to update') if result.empty?
 
     @message = MessageCreateModel.new(result_to_message(result))
   end

@@ -1,7 +1,6 @@
 # encoding: utf-8
 # author: rpolasek
 
-# TODO: custom exception
 # TODO: geo location
 
 class MessageFindModel
@@ -58,7 +57,7 @@ class MessageFindModel
 
   def find
     err_msg = validate_before_find
-    raise err_msg.join("\n") unless err_msg.empty?
+    raise ElasticSearchFindError.new(err_msg.join("\n")) unless err_msg.empty?
 		
     ElasticSearchAdapter.find(self)
   end
