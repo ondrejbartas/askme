@@ -68,24 +68,24 @@ class MessageFindModel
     unless @message.nil?
       
       if @tags.nil? || @tags.empty?
-        tags = @message.scan(/\s+#([^\s.,;:]+)/).flatten
+        tags = @message.scan(/(?>^#|\s+#)([^\s.,;:]+)/).flatten
         unless tags.empty?
           @tags = tags
           @args[:tags] ||= @tags
       
           # remove tag(s) from the message
-          @message.gsub!(/\s#[^\s.,;:]+/, '')
+          @message.gsub!(/(^#|\s#)[^\s.,;:]+/, '')
         end
       end
       
       if @recipients.nil? || @recipients.empty?
-        recipients = @message.scan(/\s+@([^\s.,;:]+)/).flatten
+        recipients = @message.scan(/(?>^@|\s+@)([^\s.,;:]+)/).flatten
         unless recipients.empty?
           @recipients = recipients
           @args[:recipients] ||= @recipients
 
           # remove recipient(s) from the messsage
-          @message.gsub!(/\s@[^\s.,;:]+/, '')
+          @message.gsub!(/(^@|\s@)[^\s.,;:]+/, '')
         end
       end
 
